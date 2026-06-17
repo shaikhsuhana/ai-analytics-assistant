@@ -3,7 +3,7 @@ langgraph==0.2.6
 langchain==0.2.16
 langchain-openai==0.1.23
 langchain-community==0.2.16
-openai==1.14.3
+openai==1.40.0
 pandas==2.2.1
 plotly==5.20.0
 python-dotenv==1.0.1
