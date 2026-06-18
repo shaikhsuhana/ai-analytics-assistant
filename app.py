@@ -117,8 +117,8 @@ if not os.path.exists(DB_PATH):
     create_db()
 
 # ── API key from secrets or env ───────────────────────────────────────────────
-if "OPENAI_API_KEY" in st.secrets:
-    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+if "GROQ_API_KEY" in st.secrets:
+    os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 
 # ── Session state ─────────────────────────────────────────────────────────────
 if "messages" not in st.session_state:
