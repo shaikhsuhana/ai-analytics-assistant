@@ -5,7 +5,7 @@ import sqlite3
 import pandas as pd
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from setup_db import create_db, DB_PATH
 
 # ── Ensure DB exists ──────────────────────────────────────────────────────────
