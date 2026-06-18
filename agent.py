@@ -1,4 +1,4 @@
-# agent.py — AI Analytics Agent using LangGraph + SQLite
+# agent.py — AI Analytics Agent using LangGraph + SQLite + Groq (free)
 
 import os
 import sqlite3
@@ -49,16 +49,16 @@ class AnalyticsState(TypedDict):
     sql_query: str
     raw_result: str
     final_answer: str
-    dataframe: object          # pd.DataFrame | None
-    chart_hint: str            # e.g. "bar", "line", "none"
+    dataframe: object
+    chart_hint: str
 
 
 # ── Agent Nodes ───────────────────────────────────────────────────────────────
 def build_agent():
-    llm = ChatOpenAI(
-        model="gpt-4o",
+    llm = ChatGroq(
+        model="llama-3.3-70b-versatile",
         temperature=0,
-        openai_api_key=os.environ.get("OPENAI_API_KEY", "")
+        groq_api_key=os.environ.get("GROQ_API_KEY", "")
     )
 
     schema = get_schema()
@@ -79,7 +79,6 @@ Rules:
 
 User question: {state['question']}"""
         sql = llm.invoke(prompt).content.strip()
-        # Strip accidental markdown fences
         sql = sql.replace("```sql", "").replace("```", "").strip()
         return {**state, "sql_query": sql}
 
@@ -95,12 +94,11 @@ SQL used: {state['sql_query']}
 Data returned:
 {state['raw_result']}
 
-Write a clear, concise answer in 2–4 sentences. Include the key numbers.
+Write a clear, concise answer in 2-4 sentences. Include the key numbers.
 Then on a new line write: CHART: bar | line | pie | none
 Choose the chart type that best visualises this data. Use "none" for single-value answers."""
         response = llm.invoke(prompt).content.strip()
 
-        # Split answer from chart hint
         chart_hint = "none"
         answer = response
         if "CHART:" in response:
@@ -126,7 +124,6 @@ Choose the chart type that best visualises this data. Use "none" for single-valu
 
 
 def ask_analytics(question: str) -> dict:
-    """Returns dict with final_answer, sql_query, dataframe, chart_hint."""
     agent = build_agent()
     result = agent.invoke({
         "question": question,
